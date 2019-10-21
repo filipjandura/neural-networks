@@ -32,7 +32,7 @@ Najnovší príspevok je [EfficientNet], kde sa autori pokúšajú využiť mož
 Microsoft COCO, ImageNet, MNIST-Fashion, Caltech 101/256, Pascal VOC, SVHN, ... a veľa ďalších.
 Keďže problematika rozpoznávania objektov je v oblasti počítačového videnia riešená už niekoľko rokov, aj pred príchodom neurónových sietí, patrične k tomu existuje aj veľké množstvo datasetov, ktoré sú generické ale aj špecializované na túto úlohu.
 
-Dataset CIFAR je zameraný na rozpoznávanie objektov. Obe varianty majú rovnaké vlastnosti. Obrázky veľkosti 32x32x3 RGB s 8bitovou hĺbkou na kanál. Rozdelenie tried je pravidelné, 600 obrázkov na triedu - 500 trénovacích 100 testovacích. Celkovo teda 6000 obrázkov pre CIFAR-10 a 60000 obrázkov pre CIFAR-100.
+Dataset CIFAR je zameraný na rozpoznávanie objektov. Obe varianty majú rovnaké vlastnosti. Obrázky veľkosti 32x32x3 RGB s 8bitovou hĺbkou na kanál. Rozdelenie tried je pravidelné, 6000 obrázkov na triedu - 5000 trénovacích 1000 testovacích. Celkovo teda 60000 obrázkov pre CIFAR-10 a 60000 obrázkov pre CIFAR-100 rozdelených do 100 tried a 6000 obrázkov na triedu.
 
 ImageNet, COCO a Pascal VOC sú datasety obsahujúce obrázky reálneho sveta, rôznych rozmerov, používajú sa pri náročnejších úlohách rozpoznávania objektov z reálnej scény. Obsahujú niekoľko 1000 tried a každá trieda má iný počet obrázkov, spolu niekoľko miliónov obrázkov v celom datasete.
 
