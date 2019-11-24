@@ -1,7 +1,8 @@
 import numpy as np
 import os
-import keras
+from tensorflow import keras
 import cv2
+
 
 class DatasetGenerator(keras.utils.Sequence):
     def __init__(self, path, batch_size=8, image_size=28, channels=3, normalize=True):
@@ -10,11 +11,14 @@ class DatasetGenerator(keras.utils.Sequence):
         self.image_size = image_size
         self.channels = channels
         self.normalize = normalize
+        self.preprocessed = False
+        self.train_x = []
+        self.train_y = []
+        self.test_x = []
+        self.test_y = []
 
-        self.train = []
-        self.test = []
-
-        self.load_dataset()
+        self.train_idx = []
+        self.test_idx = []
 
     def __load__(self, name, dir):
         ## Path
@@ -27,18 +31,21 @@ class DatasetGenerator(keras.utils.Sequence):
         image = image / 0xffff
         return image
 
-    def __getitem__(self, index):
+    def __getitem__(self, item):
         return None, None
 
     def on_epoch_end(self):
-        np.random.shuffle(self.train)
-        np.random.shuffle(self.test)
+        np.random.shuffle(self.train_idx)
+        np.random.shuffle(self.test_idx)
 
     def __num_classes__(self):
         return None
 
     def __len__(self):
-        return len(self.train) // self.batch_size
+        return len(self.train_idx) // self.batch_size
 
     def load_dataset(self):
+        pass
+
+    def __save_dataset(self):
         pass
