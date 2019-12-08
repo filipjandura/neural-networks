@@ -16,6 +16,7 @@ class BaseOptions():
         self.parser.add_argument('--checkpoints_dir', type=str, default='D:/DL_Models/Filip/', help='models are saved here')
         self.parser.add_argument('--drop_rate', default=0.3, type=float, help='drop rate for the network')
         self.parser.add_argument('--name', type=str, default='simplenet', choices=['simplenet', 'simplenet_residual', 'moe_vanila', 'moe_residual'], help='name of the experiment. It decides where to store samples and models')
+        self.parser.add_argument('--version', type=int, default=1, help='Version # of trained model to preserve previous trainings')
         self.parser.add_argument('--learning_rate', '-lr', default=1e-3, type=float)
         self.parser.add_argument('--normalize', default=True, type=bool)
         self.parser.add_argument('--log_fq', default=10, type=int)
@@ -23,7 +24,7 @@ class BaseOptions():
         self.parser.add_argument('--steps_per_epoch', default=1000, type=int)
         self.parser.add_argument('--epochs', default=20, type=int)
         self.parser.add_argument('--start_epoch', default=0, type=int)
-        self.parser.add_argument('--mode', default='train', type=str)
+        self.parser.add_argument('--mode', default='train', choices=['train','test'], type=str)
 
         self.initialized = True
 
@@ -40,7 +41,7 @@ class BaseOptions():
         print('-------------- End ----------------')
 
         # save to the disk
-        expr_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name)
+        expr_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name+'_v'+str(self.opt.version))
         if not os.path.exists(expr_dir):
             os.makedirs(expr_dir)
         file_name = os.path.join(expr_dir, 'opt.txt')

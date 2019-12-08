@@ -1,7 +1,6 @@
 import numpy as np
 import os
 from tensorflow import keras
-import cv2
 
 
 class DatasetGenerator(keras.utils.Sequence):
@@ -14,22 +13,24 @@ class DatasetGenerator(keras.utils.Sequence):
         self.preprocessed = False
         self.train_x = []
         self.train_y = []
+        self.train_cy = []
         self.test_x = []
         self.test_y = []
+        self.test_cy = []
 
         self.train_idx = []
         self.test_idx = []
 
+    def keep_indices(self, idxs):
+        self.train_x = self.train_x[idxs]
+        self.train_y = self.train_y[idxs]
+        if len(self.train_cy) == len(idxs):
+            self.train_cy = self.train_cy[idxs]
+        self.train_idx = np.arange(len(self.train_x))
+
     def __load__(self, name, dir):
-        ## Path
-        abs_img_path = os.path.join(self.path, dir, name)
-        ## Reading Image
-        image = cv2.imread(abs_img_path, cv2.IMREAD_ANYDEPTH | cv2.IMREAD_ANYCOLOR)
-        if not image.shape == (self.image_size, self.image_size, self.channels):
-            image = cv2.resize(image, (self.image_size, self.image_size))
-        ## Normalizaing
-        image = image / 0xffff
-        return image
+        pass
+        return None
 
     def __getitem__(self, item):
         return None, None
@@ -49,3 +50,10 @@ class DatasetGenerator(keras.utils.Sequence):
 
     def __save_dataset(self):
         pass
+
+    def _reset(self):
+        self.train_x = []
+        self.train_y = []
+
+        self.test_x = []
+        self.test_y = []

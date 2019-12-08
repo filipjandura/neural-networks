@@ -39,13 +39,14 @@ class EarlyStopping(keras.callbacks.Callback):
                 mode = self.mode[m]
                 m += 1
                 if mode == 'min':
-                    # TODO FIX bug with checking only first and last / but check all
-                    results.append(self.last_logs[-1][k] < self.last_logs[0][k])
+                    for log in self.last_logs:
+                        results.append(self.last_logs[-1][k] < log[k])
                 elif mode == 'max':
-                    results.append(self.last_logs[-1][k] > self.last_logs[0][k])
+                    for log in self.last_logs:
+                        results.append(self.last_logs[-1][k] > log[k])
                 else:
                     break
-            self.early_stop = True not in results
+            self.early_stop = True not in results # Master Yoda style
         else:
             self.early_stop = False
 

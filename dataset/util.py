@@ -1,5 +1,5 @@
 import numpy as np
-from skimage.color import rgb2hsv
+from skimage.color import rgb2hsv, hsv2rgb
 
 
 def zca_whitening(data:np.ndarray, epsilon:float=0.1):
@@ -15,3 +15,6 @@ def zca_whitening(data:np.ndarray, epsilon:float=0.1):
 
 def map_rgb2hsv(data:np.ndarray):
     return np.array(list(map(rgb2hsv, data)))
+
+def map_hsv2rgb(data:np.ndarray):
+    return np.array(list(map(hsv2rgb, data)))

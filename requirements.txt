@@ -1,13 +1,12 @@
 # Neural net and related libraries
 h5py
 keras==2.2.4
-tensorflow-gpu==1.13.1
+tensorflow==1.13.1
 
 
 # Image processing and reading
-py-opencv
-opencv
 scikit-image
+scikit-learn
 numpy
 cloudpickle
 
