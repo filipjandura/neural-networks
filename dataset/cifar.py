@@ -53,14 +53,15 @@ class DatasetCIFAR100(DatasetGenerator):
         index = item
         for i in range(len(self.train_files)):
             count += self.train_files[i][1]
-            if item < count:
+            if item < count // self.batch_size:
                 if self.train_files[i] != self.last_train_file:
                     self.train_x, self.train_y, self.train_cy = self.__unpickle(self.train_files[i][0])
                     self.train_idx = np.arange(self.train_y.shape[0])
                     np.random.shuffle(self.train_idx)
+                    self.last_train_file = self.train_files[i]
+                    print('Training on', self.last_train_file[0])
                 if i > 0:
-                    index = item - (count - self.train_files[i][1])
-                self.last_train_file = self.train_files[i]
+                    index = item - ((count - self.train_files[i][1]) // self.batch_size)
                 break
 
         if self.mode == 'train':
