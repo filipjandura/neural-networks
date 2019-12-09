@@ -42,7 +42,7 @@ def tpr_fpr(y_pred, y_true, threshold):
         fpr = 0
     return tpr, fpr, precision
 
-def auc_draw(y_pred, y_true, thresholds):
+def roc_draw(y_pred, y_true, thresholds):
     tpr, fpr, precision = np.array([tpr_fpr(y_pred, y_true, th) for th in thresholds]).transpose()
     auc = metrics.auc(fpr, tpr)
     figure = plt.figure(figsize=[12,6])
@@ -169,7 +169,7 @@ def test(params, net, model:tf.keras.models.Model, test_dataset:DatasetGenerator
         for step in range(steps):
             x, y = test_dataset.__getitem__(step)
             y_pred = model.predict_on_batch(x)
-            s_max = softmax(y_pred, axis=0)
+            s_max = softmax(y_pred, axis=1)
             y_am = np.argmax(y, axis=1)
             y_p_am = np.argmax(y_pred, axis=1)
             wrong = np.array([[y_am[i], y_p_am[i], x[i,:,:,3:]] for i in range(len(y_am)) if y_am[i]!=y_p_am[i] and y_am[i] in classes[:,0]])
@@ -177,7 +177,7 @@ def test(params, net, model:tf.keras.models.Model, test_dataset:DatasetGenerator
                 there = np.where(wrong[:,0]==i[0])[0]
                 if len(there) > 0:
                     for t in there:
-                        if i[1] < 2:
+                        if i[1] < 5:
                             saved_wrongs.append([i[0], wrong[t,1], hsv2rgb(wrong[t,2])])
                             i[1] += 1
                         else:
@@ -186,15 +186,19 @@ def test(params, net, model:tf.keras.models.Model, test_dataset:DatasetGenerator
             y_total += list(y.flatten())
             if step % params.log_fq == 0 or step + 1 == steps:
                 print('{:d}/{:d}'.format(step, steps-1))
-
-        figure = auc_draw(pred_total, y_total, thresholds=thresholds)
+                for i in range(20):
+                    print('[{:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f}]'.format(y_pred[i][0], y_pred[i][1], y_pred[i][2], y_pred[i][3], y_pred[i][4], y_pred[i][5], y_pred[i][6], y_pred[i][7], y_pred[i][8], y_pred[i][9]))
+                    print('[{:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f}]'.format(s_max[i][0], s_max[i][1], s_max[i][2], s_max[i][3], s_max[i][4], s_max[i][5], s_max[i][6], s_max[i][7], s_max[i][8], s_max[i][9]))
+                    print('[{:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f} {:8.5f}]'.format(y[i][0], y[i][1], y[i][2], y[i][3], y[i][4], y[i][5], y[i][6], y[i][7], y[i][8], y[i][9]))
+                    print('\n')
+        figure = roc_draw(pred_total, y_total, thresholds=thresholds)
         image_summary = plot_figure_to_summary(figure)
         write_image(file_writer, {'ROC_PR':image_summary})
 
         for save in saved_wrongs:
             image_summary = plot_image_to_summary(save[2], str(int(save[0])) + ' | ' + str(save[1]))
-            write_image(file_writer, {'Missclassified': image_summary})
-
+            write_image(file_writer, {'True_Class_'+str(int(save[0])): image_summary})
+            write_image(file_writer, {'False_Class_'+str(int(save[1])): image_summary})
         file_writer.close()
 
         return 0

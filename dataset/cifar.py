@@ -19,7 +19,7 @@ class DatasetCIFAR100(DatasetGenerator):
         if normalize:
             if self.preprocessed == False:
                 self._normalize()
-                self._augment(False)
+                self._augment(True)
                 self.__save_dataset()
                 self.preprocessed = True
                 self._reset()
@@ -184,7 +184,7 @@ class DatasetCIFAR100(DatasetGenerator):
         self.channels = self.train_x.shape[3]
         print('Images now have', self.channels, 'channels - R,G,B,H,S,V.')
 
-    def _normalize(self, batch=2000, scale_mode='item'):
+    def _normalize(self, batch=5000, scale_mode='item'):
         ## Apply zca whitening and contrast normalization
         through_data = int(self.train_x.shape[0] / batch)
         for i in range(through_data):

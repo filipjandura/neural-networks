@@ -25,22 +25,22 @@ def train(params, net:Network, model:tf.keras.models.Model, model_path:str, trai
         val_names = ['val_loss', 'val_acc', 'val_categorical_crossentropy']
         avg_val_names = ['avg_val_loss', 'avg_val_acc', 'val_categorical_crossentropy']
         # set callbacks
-        log_dir = os.path.join(params.checkpoints_dir, params.name + '_v' + str(params.version) + '/')
+        log_dir = os.path.join(params.checkpoints_dir, params.name + '_v' + str(params.version) + '/train/')
         tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir,
                                                               write_graph=True,
                                                               write_grads=True)
         tensorboard_callback.set_model(model)
-        es = callbacks.EarlyStopping(patience=5,mode=['min','max','min'])
+        es = callbacks.EarlyStopping(patience=10,mode=['min','max','min'])
 
         for epoch in range(params.start_epoch, params.epochs):
             es.on_epoch_begin(epoch)
             print('Epoch {:d}/{:d}'.format(epoch+1,params.epochs+1))
             for step in range(len(train_dataset)):
                 x, y = train_dataset.__getitem__(step)
+                loss, accuracy, cross_ent = model.train_on_batch(x,y)
                 if step % params.log_fq == 0 or step + 1 == len(train_dataset):
                     print('{:d}/{:d}'.format(step,len(train_dataset)-1))
-                    loss, accuracy, cross_ent = model.train_on_batch(x,y)
-                    print(' - loss: {:.4f} - acc: {:.4f} - cross_ent: {:.4f}'.format(loss,accuracy,cross_ent))
+                    print('  - loss: {:.4f} - acc: {:.4f} - cross_ent: {:.4f}'.format(loss,accuracy,cross_ent))
                     tensorboard_callback.on_epoch_end(len(train_dataset) * epoch + step, named_logs(train_names, [loss, accuracy, cross_ent]))
 
             model.save_weights(model_path)
